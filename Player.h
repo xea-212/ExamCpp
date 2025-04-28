@@ -3,7 +3,7 @@
 class Player :
     public GameObject
 {
-    int hImage_;    //プレイヤー画像のハンdドル
+    int hImage_;    //プレイヤー画像のハンドル
     float x_, y_;   //プレイヤーの座標
     float speed_;    //プレイヤーの移動座標
 
