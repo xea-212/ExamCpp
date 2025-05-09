@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "globals.h"
 #include "Input.h"
+#include "Enemy.h"
 
 namespace
 {
@@ -48,6 +49,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	prevTime = GetNowCount();
 
 	Player* player = new Player();
+	Enemy* enemy = new Enemy[10];
+	for (int i = 0; i < 10; i++)
+	{
+		enemy[i].SetPos(100 + i * 50, 100);
+	}
 
 	while (true)
 	{
@@ -59,10 +65,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		float deltaTime = (crrTime - prevTime) / 1000.0f;
 		gDeltaTime = deltaTime;
 
-		//ここにやりたい処理を書く
+		//ここにやりたい処理を書く（ここから）
 		player->Update();
 		player->Draw();
 
+		for (int i = 0; i < 10;i++)
+		{
+			(enemy + i)->Update();
+			(enemy + i)->Draw();
+			//enemy[i].Update();
+			//enemy[i].Draw();
+		}
+
+		//ここにやりたい処理を書く（ここまで）
+
+		//裏画面の描画
 		ScreenFlip();
 		WaitTimer(16);
 
