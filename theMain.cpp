@@ -3,6 +3,8 @@
 #include "globals.h"
 #include "Input.h"
 #include "Enemy.h"
+#include <vector>
+#include "Stage.h"
 
 namespace
 {
@@ -48,12 +50,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	crrTime = GetNowCount();
 	prevTime = GetNowCount();
 
-	Player* player = new Player();
-	Enemy* enemy = new Enemy[10];
-	for (int i = 0; i < 10; i++)
-	{
-		enemy[i].SetPos(100 + i * 50, 100);
-	}
+	Stage* stage = new Stage();
 
 	while (true)
 	{
@@ -66,16 +63,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		gDeltaTime = deltaTime;
 
 		//ここにやりたい処理を書く（ここから）
-		player->Update();
-		player->Draw();
-
-		for (int i = 0; i < 10;i++)
-		{
-			(enemy + i)->Update();
-			(enemy + i)->Draw();
-			//enemy[i].Update();
-			//enemy[i].Draw();
-		}
+		
+		stage->Update();
+		stage->Draw();
 
 		//ここにやりたい処理を書く（ここまで）
 
