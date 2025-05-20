@@ -80,12 +80,25 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		//gameObjectの更新
 		for (auto& obj : gameObjects)
 		{
-			obj->Update();
+			obj->Update(); //ゲームオブジェクトの更新
 		}
 		//gameObjectの描画
 		for (auto& obj : gameObjects)
 		{
-			obj->Draw();
+			obj->Draw(); //ゲームオブジェクトの描画
+		}
+
+		for (auto it = gameObjects.begin(); it != gameObjects.end();)
+		{
+			if (!(*it)->IsAlive())
+			{
+				delete* it; //ゲームオブジェクトを削除
+				it = gameObjects.erase(it); //ベクターから削除
+			}
+			else
+			{
+				++it; //次の要素へ
+			}
 		}
 		//ここにやりたい処理を書く（ここまで）
 
