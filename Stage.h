@@ -2,20 +2,19 @@
 #include "GameObject.h"
 #include <vector>
 
-//ポインターの時だけこの使い方ができる
-class Player; //前方宣言
-class Enemy;
+class Player; // 前方宣言
+class Enemy; // 前方宣言
 
 class Stage :
-    public GameObject
+	public GameObject
 {
-public:
-    Stage();
-    ~Stage();
-    void Update() override;
-    void Draw() override;
 private:
-    Player* player_;
-    std::vector<Enemy *> enemy_;
+	Player* player_; // プレイヤーオブジェクト
+	std::vector<Enemy*> enemy_; // 敵オブジェクト
+	int hBackground;
+public:
+	Stage();
+	~Stage();
+	void Update() override;
+	void Draw() override;
 };
-
