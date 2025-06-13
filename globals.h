@@ -28,3 +28,4 @@ struct Rect
 		return { x + width / 2, y + height / 2 };
 	}
 };
+

@@ -3,6 +3,7 @@
 class PlayScene :
     public GameObject
 {
+public:
     PlayScene();
     ~PlayScene();
     void Update() override;
