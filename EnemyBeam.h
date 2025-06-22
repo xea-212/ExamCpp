@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "globals.h"
+#include "Player.h"
 
 class EnemyBeam :
     public GameObject
@@ -27,6 +28,8 @@ private:
     Point imageSize_;
     //int isize_x, isize_y; //弾の表示サイズ
     bool isFired_; //発射されているかどうか
-
+    Player* p;
+    Point pPos;
+    Point direction_;
 };
 

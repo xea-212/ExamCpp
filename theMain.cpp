@@ -6,6 +6,16 @@
 #include <vector>
 #include "Stage.h"
 
+enum GameScene
+{
+	TITLE,
+	PLAY,
+	RESULT,
+	NUM_MAX
+};
+
+GameScene curScene = TITLE;
+
 namespace
 {
 	const int BGCOLOR[3] = { 0, 0, 0 };//背景色
@@ -46,7 +56,82 @@ void MyGame()
 	DrawFormatString(100, 150, GetColor(0, 0, 0), "%010d", timer);
 }
 
+void UpdateTitleScene()
+{
+	if (Input::IsKeyDown(KEY_INPUT_SPACE)) // Example: Press Space to start
+	{
+		curScene = PLAY;
+		// Add any initialization for the play scene here if needed
+	}
+}
 
+void DrawTitleScene()
+{
+	int tImage = LoadGraph("Assets/shootinggame.png");
+	DrawFormatString(WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2 - 10, GetColor(255, 255, 255), "TitleScene");
+	DrawGraph(225, 200, tImage, TRUE);
+}
+
+void UpdatePlayScene()
+{
+	if (Input::IsKeyDown(KEY_INPUT_R)) // Example: Press Space to start
+	{
+		curScene = RESULT;
+		// Add any initialization for the play scene here if needed
+	}
+
+	if (newObjects.size() > 0)
+	{
+		for (auto& obj : newObjects)
+		{
+			gameObjects.push_back(obj);
+		}
+		newObjects.clear();
+	}
+
+	//gameObjectの更新
+	for (auto& obj : gameObjects)
+	{
+		obj->Update(); //ゲームオブジェクトの更新
+	}
+	//gameObjectの描画
+
+
+	for (auto it = gameObjects.begin(); it != gameObjects.end();)
+	{
+		if (!(*it)->IsAlive())
+		{
+			delete* it; //ゲームオブジェクトを削除
+			it = gameObjects.erase(it); //ベクターから削除
+		}
+		else
+		{
+			++it; //次の要素へ
+		}
+	}
+}
+
+void DrawPlayScene()
+{
+	for (auto& obj : gameObjects)
+	{
+		obj->Draw(); //ゲームオブジェクトの描画
+	}
+}
+
+void UpdateResultScene()
+{
+	if (Input::IsKeyDown(KEY_INPUT_SPACE)) // Example: Press Space to start
+	{
+		curScene = TITLE;
+		// Add any initialization for the play scene here if needed
+	}
+}
+
+void DrawResultScene()
+{
+	DrawFormatString(WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2 - 10, GetColor(255, 255, 255), "ResultScene");
+}
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -68,38 +153,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//ここにやりたい処理を書く（ここから）
 		//ゲームオブジェクトの追加
-		if (newObjects.size() > 0)
-		{
-			for (auto& obj : newObjects)
-			{
-				gameObjects.push_back(obj);
-			}
-			newObjects.clear();
-		}
 		
-		//gameObjectの更新
-		for (auto& obj : gameObjects)
+		switch (curScene)
 		{
-			obj->Update(); //ゲームオブジェクトの更新
-		}
-		//gameObjectの描画
-		for (auto& obj : gameObjects)
-		{
-			obj->Draw(); //ゲームオブジェクトの描画
+		case TITLE:
+			UpdateTitleScene();
+			DrawTitleScene();
+			break;
+		case PLAY:
+			UpdatePlayScene();
+			DrawPlayScene();
+			break;
+		case RESULT:
+			UpdateResultScene();
+			DrawResultScene();
+			break;
 		}
 
-		for (auto it = gameObjects.begin(); it != gameObjects.end();)
-		{
-			if (!(*it)->IsAlive())
-			{
-				delete* it; //ゲームオブジェクトを削除
-				it = gameObjects.erase(it); //ベクターから削除
-			}
-			else
-			{
-				++it; //次の要素へ
-			}
-		}
 		//ここにやりたい処理を書く（ここまで）
 
 		//裏画面の描画
@@ -117,3 +187,4 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	DxLib_End();
 	return 0;
 }
+

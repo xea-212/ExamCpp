@@ -21,7 +21,7 @@ namespace
 
 
 Player::Player()
-	:GameObject(), hImage_(-1), x_(0), y_(0), speed_(0), imageSize_({ PLAYER_IMAGE_WIDTH ,PLAYER_IMAGE_HEIGHT})
+	:GameObject(), hImage_(-1), pos_({0,0}), speed_(0), imageSize_({PLAYER_IMAGE_WIDTH ,PLAYER_IMAGE_HEIGHT})
 {
 	hImage_ = LoadGraph("Assets\\tiny_ship5.png");//プレイヤーの画像を読み込む
 	if (hImage_ == -1)
@@ -29,13 +29,15 @@ Player::Player()
 		//画像の読み込みに失敗した場合のエラーハンドリング
 		//エラーを返してゲーム終了
 	}
-	x_ = PLAYER_INIT_X;//初期座標
-	y_ = PLAYER_INIT_Y;
+	pos_.x = PLAYER_INIT_X;//初期座標
+	pos_.y = PLAYER_INIT_Y;
 	speed_ = PLAYER_INIT_SPEED;
 	for (int i = 0; i < PLAYER_BULLET_NUM; i++)
 	{
 		bullets_.push_back(new Bullet()); // 弾のベクターを初期化
 	}
+
+	pInstance_ = this;
 	AddGameObject(this); //プレイヤーオブジェクトをゲームオブジェクトに追加
 }
 
@@ -49,11 +51,11 @@ void Player::Update()
 	float dt = GetDeltaTime(); //フレーム間の時間差を取得
 	if (Input::IsKeepKeyDown(KEY_INPUT_LEFT))
 	{
-		x_ -= speed_ * dt; // 左に移動
+		pos_.x -= speed_ * dt; // 左に移動
 	}
 	if (Input::IsKeepKeyDown(KEY_INPUT_RIGHT))
 	{
-		x_ += speed_ * dt;  // 右に移動
+		pos_.x += speed_ * dt;  // 右に移動
 	}
 	static float bulletTimer = 0.0f;
 	
@@ -67,7 +69,7 @@ void Player::Update()
 		if (bulletTimer <= 0.0f)
 		{
 			Shoot(); // 弾を発射
-			//new Bullet(x_ + BULLET_IMAGE_MARGE, y_); //弾を発射
+			//new Bullet(pos_.x + BULLET_IMAGE_MARGE, pos_.y); //弾を発射
 			bulletTimer = BULLET_INTERVAL; //弾の発射間隔をリセット
 		}
 	}
@@ -76,7 +78,7 @@ void Player::Update()
 void Player::Draw()
 {
 	// プレイヤーの画像を描画（画像の原点は左上）
-	DrawExtendGraphF(x_, y_, x_ + PLAYER_IMAGE_WIDTH, y_ + PLAYER_IMAGE_HEIGHT, hImage_, TRUE);
+	DrawExtendGraphF(pos_.x, pos_.y, pos_.x + PLAYER_IMAGE_WIDTH, pos_.y + PLAYER_IMAGE_HEIGHT, hImage_, TRUE);
 }
 
 //弾を撃つ関数
@@ -86,7 +88,7 @@ void Player::Shoot()
 	//{
 	//	if (itr->IsFired() == false)
 	//	{
-	//		itr->SetPos(x_ + BULLET_IMAGE_MARGIN, y_); // 弾の位置を設定
+	//		itr->SetPos(pos_.x + BULLET_IMAGE_MARGIN, pos_.y); // 弾の位置を設定
 	//		itr->SetFired(true); // 発射状態にする
 	//		break; //一つ発射したらループを抜ける
 	//	}
@@ -95,7 +97,7 @@ void Player::Shoot()
 	Bullet* blt = GetActiveBullet();
 	if (blt != nullptr)
 	{
-		blt->SetPos(x_ + BULLET_IMAGE_MARGIN, y_); // 弾の位置を設定
+		blt->SetPos(pos_.x + BULLET_IMAGE_MARGIN, pos_.y); // 弾の位置を設定
 		blt->SetFired(true); // 発射状態にする
 	}
 }
@@ -111,3 +113,5 @@ Bullet* Player::GetActiveBullet()
 	}
 	return nullptr;
 }
+
+Player* Player::pInstance_ = nullptr;
